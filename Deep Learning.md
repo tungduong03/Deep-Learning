@@ -325,6 +325,93 @@ Các lớp (layer) là thành phần chính trong mạng nơ-ron, hoạt động
 
 ![alt text](image-15.png)
 
-
+Cũng cần mã hóa nhãn theo dạng phân loại (**categorical encoding**)
 
 ![alt text](image-16.png)
+
+HUấn luyện network trong Keras được thực hiện bằng cách gọi phương thức fit của network, ta sẽ gán mô hình với dữ liệu huấn luyện:
+```py
+>>> network.fit(train_images, train_labels, epochs=5, batch_size=128)
+Epoch 1/5
+60000/60000 [==============================] - 9s - loss: 0.2524 - acc: 0.9273
+Epoch 2/5
+51328/60000 [========================>.....] - ETA: 1s - loss: 0.1035 - acc: 0.9692
+```
+Hai giá trị được hiển thị trên là: hàm mất mát (loss) và độ chính xác (accuracy)
+
+kiểm tra xem mô hình hoạt động tốt trên tập kiểm tra:
+```py
+>>> test_loss, test_acc = network.evaluate(test_images, test_labels)
+>>> print('test_acc:', test_acc)
+test_acc: 0.9785
+```
+Độ chính xác trên tập huấn luyện đạt 98.9%, trong khi trên tập kiểm tra đạt 97.8%, cho thấy hiện tượng quá khớp (`overfitting`)
+
+### 2.2 Data representations for neural networks - Biểu diễn dữ liệu cho mạng nơ-ron
+**Tensor** là cấu trúc dữ liệu cơ bản trong học máy, giống như các container chứa dữ liệu số. Ma trận là tensor 2D, và tensor là sự mở rộng của ma trận lên nhiều chiều hơn, gọi là các trục (axis).
+#### 2.2.2 Vectors (1D tensors)
+`Tensor 0D` hay `scalar` là tensor chỉ chứa một số duy nhất (như float32 hay float64) và có 0 trục. Trong Numpy, có thể kiểm tra số trục của một tensor bằng thuộc tính `ndim`.
+```py
+>>> import numpy as np
+>>> x = np.array(12)
+>>> x
+array(12)
+>>> x.ndim
+0
+```
+#### 2.2.3 Matrices (2D tensors)
+Ma trận hay tensor 2D là một mảng có hai trục, tương ứng với hàng và cột. Ví dụ: 
+```py
+>>> x = np.array([[5, 78, 2, 34, 0],
+                  [6, 79, 3, 35, 1],
+                  [7, 80, 4, 36, 2]])
+>>> x.ndim
+2
+```
+#### 2.2.4 3D tensors and higher-dimensional tensors - Tensor 3D và các tensor nhiều chiều hơn
+Tensor 3D có thể hình dung như một khối các ma trận. Tensor nhiều chiều hơn có thể tạo ra bằng cách gói các tensor nhỏ hơn vào một mảng lớn hơn. Trong học sâu, các tensor 0D đến 4D thường được sử dụng, với tensor 5D dành cho dữ liệu video.
+
+Ví dụ:
+```py
+>>> x = np.array([[[5, 78, 2, 34, 0],
+                   [6, 79, 3, 35, 1],
+                   [7, 80, 4, 36, 2]],
+                  [[5, 78, 2, 34, 0],
+                   [6, 79, 3, 35, 1],
+                   [7, 80, 4, 36, 2]],
+                  [[5, 78, 2, 34, 0],
+                   [6, 79, 3, 35, 1],
+                   [7, 80, 4, 36, 2]]])
+>>> x.ndim
+3
+```
+#### 2.2.5 Key attributes - Thuộc tính chính
+Một tensor được định nghĩa bởi ba thuộc tính chính:
+- Số trục (rank): được xác định bằng `ndim` trong `Numpy`
+- Hình dạng (shape): Đây là một tuple các số nguyên mô tả số chiều của tensor dọc theo mỗi trục. 
+- Kiểu dữ liệu (data type): Thường được gọi là `dtype` trong các thư viện Python. Đây là loại dữ liệu chứa trong tensor; ví dụ, kiểu của tensor có thể là float32, uint8, float64, v.v có thể là char nhưng ko có string
+
+trong ví dụ MNIST:
+
+Tải bộ dữ liệu: 
+```py
+from keras.datasets import mnist
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+```
+hiển thị số trục của tensor train_images, thông qua thuộc tính `ndim`:
+```py
+>>> print(train_images.ndim)
+3
+```
+Shape của nó: 
+```py
+>>> print(train_images.shape)
+(60000, 28, 28)
+```
+kiểu dữ liệu của nó, thông qua thuộc tính `dtype`:
+```py
+>>> print(train_images.dtype)
+uint8
+```
+Vậy ở đây chúng ta có một `tensor 3D` của các số nguyên `8-bit`. Chính xác hơn, nó là một mảng gồm `60.000 ma trận` với kích thước `28 × 28`. Mỗi ma trận như vậy là một hình ảnh thang độ xám, với các hệ số nằm trong khoảng từ 0 đến 255.
+
