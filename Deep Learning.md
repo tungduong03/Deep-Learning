@@ -415,3 +415,326 @@ uint8
 ```
 Vậy ở đây chúng ta có một `tensor 3D` của các số nguyên `8-bit`. Chính xác hơn, nó là một mảng gồm `60.000 ma trận` với kích thước `28 × 28`. Mỗi ma trận như vậy là một hình ảnh thang độ xám, với các hệ số nằm trong khoảng từ 0 đến 255.
 
+#### 2.2.6 Manipulating tensors in Numpy - Thao tác với tensor trong Numpy
+cách cắt tensor (tensor slicing) trong Numpy, cho phép chọn các phần tử từ tensor bằng cách chỉ định chỉ số trên mỗi trục
+
+#### 2.2.7 The notion of data batches -  Khái niệm về lô dữ liệu
+Trong tất cả các tensor dữ liệu trong deep learning, trục đầu tiên (trục 0) là trục mẫu (samples axis). Trong ví dụ MNIST, các mẫu là hình ảnh của chữ số.
+
+Các mô hình deep learning không xử lý toàn bộ tập dữ liệu cùng lúc, mà chia thành các lô nhỏ (batches). Ví dụ, lô đầu tiên của các chữ số MNIST có kích thước 128:
+```py
+batch = train_images[:128]
+```
+Lô tiếp theo:
+```py
+batch = train_images[128:256]
+```
+tương tự ...
+
+Trục đầu tiên của tensor cho một lô dữ liệu được gọi là trục lô (batch axis) hoặc chiều lô (batch dimension).
+
+#### 2.2.8 Real-world examples of data tensors
+Dữ liệu thao tác gần như luôn thuộc vào một trong các loại sau:
+
+- Dữ liệu vector: Tensor 2D có dạng (số mẫu, đặc trưng)
+- Dữ liệu chuỗi thời gian hoặc dữ liệu dãy: Tensor 3D có dạng (số mẫu, bước thời gian, đặc trưng)
+- Hình ảnh: Tensor 4D có dạng (số mẫu, chiều cao, chiều rộng, kênh) hoặc (số mẫu, kênh, chiều cao, chiều rộng)
+- Video: Tensor 5D có dạng (số mẫu, khung hình, chiều cao, chiều rộng, kênh) hoặc (số mẫu, khung hình, kênh, chiều cao, chiều rộng)
+
+#### 2.2.9 Vector data
+Đây là trường hợp phổ biến nhất. Trong loại dữ liệu này, mỗi điểm dữ liệu đơn lẻ có thể được mã hóa dưới dạng một vector, và một lô dữ liệu sẽ được mã hóa thành một tensor 2D, trong đó trục đầu tiên là **trục mẫu** (samples axis) và trục thứ hai là **trục đặc trưng** (features axis).
+
+Ví dụ:
+
+- Một tập dữ liệu về dân số, trong đó mỗi người được biểu diễn bằng tuổi, mã bưu điện (ZIP code), và thu nhập. Mỗi người có thể được **đặc trưng bằng một vector gồm 3 giá trị**, và toàn bộ tập dữ liệu của 100.000 người có thể được lưu trong một **tensor 2D** có dạng (100000, 3).
+- Một tập dữ liệu văn bản, trong đó mỗi tài liệu được biểu diễn bằng số lần xuất hiện của mỗi từ (từ một từ điển gồm 20.000 từ phổ biến). Mỗi tài liệu có thể được mã hóa thành một vector gồm 20.000 giá trị (mỗi giá trị là số lần xuất hiện của một từ), và toàn bộ tập dữ liệu gồm 500 tài liệu có thể được lưu trong một **tensor 2D** có dạng (500, 20000).
+#### 2.2.10 Timeseries data or sequence data - Dữ liệu chuỗi thời gian hoặc dữ liệu dãy
+Khi thời gian hoặc thứ tự chuỗi có ý nghĩa trong dữ liệu, nó nên được lưu trữ dưới dạng một tensor 3D với một trục thời gian rõ ràng. Mỗi mẫu có thể được mã hóa thành một chuỗi các vector (tensor 2D), và một lô dữ liệu sẽ được mã hóa thành một tensor 3D.
+
+![alt text](image-17.png)
+
+Một vài ví dụ:
+
+- **Tập dữ liệu giá cổ phiếu**: Mỗi phút, chúng ta lưu giá hiện tại, giá cao nhất và giá thấp nhất trong phút vừa qua. Mỗi phút được mã hóa thành một vector 3 chiều, một ngày giao dịch được mã hóa thành một **tensor 2D** có dạng (390, 3) (vì có 390 phút trong một ngày giao dịch), và dữ liệu của 250 ngày được lưu trong một tensor 3D có dạng (250, 390, 3). Ở đây, mỗi mẫu là dữ liệu của một ngày.
+- **Tập dữ liệu tweet**: Mỗi tweet được mã hóa thành một chuỗi gồm 280 ký tự từ một bảng chữ cái với 128 ký tự duy nhất. Mỗi ký tự có thể được mã hóa thành một vector nhị phân kích thước 128, với giá trị 1 tại vị trí tương ứng với ký tự. Mỗi tweet được mã hóa thành một tensor 2D có dạng (280, 128), và tập dữ liệu gồm 1 triệu tweet có thể được lưu trong tensor có dạng (1000000, 280, 128).
+
+#### 2.2.11 Image data
+theo quy ước, tensor ảnh luôn là tensor 3D
+
+![alt text](image-18.png)
+
+Có hai quy ước cho dạng tensor ảnh:
+
+- Quy ước channels-last (được TensorFlow sử dụng): trục độ sâu màu nằm ở cuối cùng, dạng (samples, height, width, color_depth).
+- Quy ước channels-first (được Theano sử dụng): trục độ sâu màu nằm ngay sau trục lô, dạng (samples, color_depth, height, width).
+
+#### 2.2.12 Video data
+cần dùng tensor 5D
+
+Một video có thể được hiểu là một chuỗi các khung hình (frames), mỗi khung là một ảnh màu. Vì **mỗi khung hình** có thể được lưu trong một **tensor 3D** (chiều cao, chiều rộng, độ sâu màu), nên một **chuỗi các khung hình** có thể được lưu trong **tensor 4D** (frames, height, width, color_depth), và **một lô các video khác nhau** sẽ được lưu trong **tensor 5D** với dạng (samples, frames, height, width, color_depth).
+
+### 2.3 The gears of neural networks: tensor operations - Các cơ chế của mạng nơ-ron: các phép toán tensor
+Cũng như mọi chương trình máy tính có thể được giảm xuống thành một tập hợp nhỏ các phép toán nhị phân trên các đầu vào nhị phân (AND, OR, NOR, v.v.), tất cả các biến đổi mà mạng nơ-ron sâu học được có thể được rút gọn thành một số ít các phép toán tensor được áp dụng lên tensor dữ liệu số. Ví dụ, có thể cộng tensor, nhân tensor, v.v.
+
+Trong ví dụ ban đầu, chúng ta xây dựng mạng bằng cách xếp chồng các lớp Dense lên nhau. Một lớp Keras trông như sau:
+```py
+keras.layers.Dense(512, activation='relu')
+```
+Lớp này có thể được hiểu như một hàm, nhận một tensor 2D làm đầu vào và trả về một tensor 2D khác—một biểu diễn mới cho tensor đầu vào. Cụ thể, hàm là:
+```py
+output = relu(dot(W, input) + b)
+```
+Trong đó, W là một tensor 2D và b là một vector, cả hai đều là thuộc tính của lớp.
+
+Chúng ta có ba phép toán tensor ở đây:
+
+- Phép nhân ma trận (**dot**) giữa tensor đầu vào và tensor W.
+- Phép cộng (+) giữa tensor kết quả và vector b.
+- Phép toán ReLU (**relu**), trong đó relu(x) là **max(x, 0)**.
+
+#### 2.3.1 Element-wise operations
+**Element-wise operations** là những phép toán áp dụng độc lập trên từng phần tử của tensor, giúp chúng phù hợp với việc xử lý song song quy mô lớn.
+
+Ví dụ phổ biến của phép tính này là hàm ReLU (Rectified Linear Unit) và phép cộng.
+
+ví dụ đơn giản về việc thực hiện một hàm ReLU theo từng phần tử trong Python:
+```py
+def naive_relu(x):
+    assert len(x.shape) == 2  # Kiểm tra x có 2 chiều
+    x = x.copy()  # Sao chép tensor để không thay đổi dữ liệu gốc
+    for i in range(x.shape[0]):  # Lặp qua các hàng
+        for j in range(x.shape[1]):  # Lặp qua các cột
+            x[i, j] = max(x[i, j], 0)  # Thực hiện ReLU (max giữa giá trị hiện tại và 0)
+    return x
+```
+với phép cộng:
+```py
+def naive_add(x, y):
+    assert len(x.shape) == 2  # Đảm bảo rằng cả x và y đều có 2 chiều
+    assert x.shape == y.shape  # Kiểm tra x và y có cùng kích thước
+    x = x.copy()  # Sao chép tensor x
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            x[i, j] += y[i, j]  # Cộng từng phần tử của x và y
+    return x
+```
+Ví dụ với NumPy, có thể viết như sau:
+```py
+import numpy as np
+z = x + y
+z = np.maximum(z, 0.)  # Thực hiện ReLU nhanh chóng
+```
+sử dụng các hàm dựng sẵn của NumPy (như np.maximum) sẽ nhanh hơn và hiệu quả hơn nhiều, nhờ việc sử dụng thư viện BLAS để xử lý song song.
+#### 2.3.2 Broadcasting
+Phép tính cộng trong Python (ví dụ: naive_add ở phần trước) yêu cầu hai tensor phải có cùng kích thước. Tuy nhiên, trong thực tế, ta thường gặp các tình huống như cộng một ma trận 2D với một vector (tensor 1D) mà không phải lúc nào chúng cũng có kích thước giống nhau. Để xử lý trường hợp này, NumPy sử dụng một cơ chế gọi là broadcasting.
+
+Broadcasting cho phép tensor nhỏ hơn mở rộng ra để phù hợp với kích thước của tensor lớn hơn thông qua hai bước:
+- Thêm trục vào tensor nhỏ hơn để có số chiều bằng tensor lớn hơn.
+- Lặp tensor nhỏ dọc theo các trục mới này để phù hợp với kích thước của tensor lớn hơn.
+
+Ví dụ cụ thể:
+
+Cho X có kích thước (32, 10) và y có kích thước (10,). Đầu tiên, một trục mới được thêm vào y, làm cho kích thước của nó trở thành (1, 10). Sau đó, y được lặp lại 32 lần dọc theo trục mới này, tạo thành một tensor Y có kích thước (32, 10). Lúc này, có thể cộng X và Y vì chúng đã có cùng kích thước.
+
+Việc lặp lại tensor nhỏ này không thực sự tạo ra một tensor 2D mới trong bộ nhớ vì làm như vậy sẽ rất không hiệu quả. Thay vào đó, NumPy chỉ thực hiện phép tính một cách "ảo" ở cấp độ thuật toán.
+
+Ví dụ về hàm cộng một ma trận và một vector:
+```py
+def naive_add_matrix_and_vector(x, y):
+    assert len(x.shape) == 2  # Xác nhận x có 2 chiều
+    assert len(y.shape) == 1  # Xác nhận y là một vector 1 chiều
+    assert x.shape[1] == y.shape[0]  # Số cột của x bằng với số phần tử của y
+    x = x.copy()  # Sao chép x để tránh sửa đổi dữ liệu gốc
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            x[i, j] += y[j]  # Cộng từng phần tử của y vào các cột của x
+    return x
+```
+Broadcasting cho phép thực hiện các phép tính element-wise giữa hai tensor có các kích thước khác nhau, miễn là có thể áp dụng quy tắc broadcasting để mở rộng tensor nhỏ hơn.
+
+Ví dụ về sử dụng broadcasting với NumPy:
+```py
+import numpy as np
+x = np.random.random((64, 3, 32, 10))  # Tensor có 4 chiều
+y = np.random.random((32, 10))  # Tensor có 2 chiều
+z = np.maximum(x, y)  # Áp dụng phép tính element-wise maximum với broadcasting
+```
+#### 2.3.3 Tensor dot
+Dot product là phép nhân tensor quan trọng, kết hợp các phần tử của các tensor đầu vào.
+
+Trong NumPy và Keras, phép dot được thực hiện qua hàm np.dot. Ví dụ:
+```py
+import numpy as np
+z = np.dot(x, y)
+```
+**1. Phép dot giữa hai vector:**
+
+Phép dot product giữa hai vector được tính bằng cách nhân từng phần tử tương ứng rồi cộng lại:
+```py
+def naive_vector_dot(x, y):
+    assert len(x.shape) == 1  # Xác nhận x là vector 1D
+    assert len(y.shape) == 1  # Xác nhận y là vector 1D
+    assert x.shape[0] == y.shape[0]  # Đảm bảo x và y có cùng số phần tử
+    z = 0.
+    for i in range(x.shape[0]):
+        z += x[i] * y[i]  # Tính tích các phần tử tương ứng và cộng dồn
+    return z
+```
+Kết quả của phép dot product giữa hai vector là một scalar (số vô hướng), và hai vector chỉ có thể thực hiện phép dot product khi chúng có cùng số phần tử.
+
+**2. Phép dot giữa ma trận và vector:**
+
+Phép dot product giữa một ma trận và một vector trả về một vector, trong đó mỗi phần tử là tích chấm giữa vector và từng hàng của ma trận.
+```py
+def naive_matrix_vector_dot(x, y):
+    assert len(x.shape) == 2  # Xác nhận x là ma trận 2D
+    assert len(y.shape) == 1  # Xác nhận y là vector 1D
+    assert x.shape[1] == y.shape[0]  # Số cột của x phải bằng số phần tử của y
+    z = np.zeros(x.shape[0])  # Khởi tạo vector kết quả
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            z[i] += x[i, j] * y[j]  # Nhân từng hàng của x với vector y
+    return z
+```
+**3. Phép dot giữa hai ma trận:**
+
+Phép dot product giữa hai ma trận x và y chỉ khả thi nếu **số cột của ma trận x** bằng **số hàng của ma trận y** (tức là x.shape[1] == y.shape[0]). Kết quả sẽ là một ma trận mới, trong đó các phần tử là tích chấm giữa các hàng của x và các cột của y.
+```py
+def naive_matrix_dot(x, y):
+    assert len(x.shape) == 2  # Xác nhận x là ma trận 2D
+    assert len(y.shape) == 2  # Xác nhận y là ma trận 2D
+    assert x.shape[1] == y.shape[0]  # Số cột của x phải bằng số hàng của y
+    z = np.zeros((x.shape[0], y.shape[1]))  # Khởi tạo ma trận kết quả
+    for i in range(x.shape[0]):
+        for j in range(y.shape[1]):
+            row_x = x[i, :]  # Lấy hàng thứ i của x
+            column_y = y[:, j]  # Lấy cột thứ j của y
+            z[i, j] = naive_vector_dot(row_x, column_y)  # Tích chấm giữa hàng và cột
+    return z
+```
+**4. Tích chấm với tensor có nhiều chiều:**
+
+Phép dot có thể được mở rộng cho các tensor có số chiều lớn hơn. Ví dụ:
+
+- (a, b, c, d) . (d,) -> (a, b, c)
+- (a, b, c, d) . (d, e) -> (a, b, c, e)
+
+Quy tắc tương tự như trong trường hợp ma trận 2D, chỉ cần đảm bảo các trục tương ứng phù hợp về kích thước.
+
+**Quy tắc chính của dot là số cột của tensor đầu tiên phải bằng số hàng của tensor thứ hai.**
+
+#### 2.3.4 Tensor reshaping 
+Reshaping là thao tác thay đổi cấu trúc (hàng và cột) của tensor mà không thay đổi tổng số phần tử.
+
+Ví dụ:
+```py
+train_images = train_images.reshape((60000, 28 * 28))
+```
+Điều này biến đổi tensor ban đầu của hình ảnh từ kích thước (60000, 28, 28) thành một tensor 2 chiều có kích thước (60000, 784).
+
+Việc reshape rất hữu ích khi tiền xử lý dữ liệu cho các mô hình deep learning, như chuyển ảnh 2D thành vector 1D.
+
+Transpose là một dạng reshaping đặc biệt, hoán đổi hàng và cột của tensor.
+
+Số lượng phần tử của tensor trước và sau khi reshape luôn phải bằng nhau.
+#### 2.3.5 Geometric interpretation of tensor operations
+
+Các phép toán tensor có thể hiểu dưới dạng các phép biến đổi hình học.
+Phép cộng vector có thể hình dung là "nối tiếp" các vector lại với nhau, tạo thành một vector mới.
+Các phép biến đổi affine, phép quay, phép co giãn đều có thể được biểu diễn qua các phép toán tensor.
+Ví dụ, phép quay một vector 2D với góc θ được thực hiện bằng phép nhân tensor với ma trận quay 2x2.
+#### 2.3.6 A geometric interpretation of deep learning
+Deep learning là quá trình áp dụng các phép biến đổi hình học phức tạp lên dữ liệu nhiều chiều thông qua chuỗi các phép biến đổi đơn giản.
+
+Mạng nơ-ron giống như quá trình gỡ rối một quả bóng giấy bị vò nát (dữ liệu đầu vào), nhằm tách biệt các lớp dữ liệu trong không gian hình học.
+
+Mỗi lớp trong mạng nơ-ron đóng vai trò thực hiện một phép biến đổi đơn giản, giúp dữ liệu trở nên dễ phân biệt hơn qua từng bước.
+
+Chuỗi dài các lớp này giúp xử lý những quá trình phức tạp và biến dữ liệu phức tạp thành các biểu diễn có thể phân loại một cách hiệu quả.
+### 2.4 The engine of neural networks: gradient-based optimization
+Trong mạng nơ-ron, mỗi lớp sẽ thực hiện một phép biến đổi dữ liệu đầu vào thông qua công thức:\
+`output=relu(dot(W,input)+b)`\
+Trong đó:
+
+- W và b là các tensor được gọi là weights (trọng số) hoặc trainable parameters (tham số có thể huấn luyện) của lớp, gồm kernel và bias.
+- Những trọng số này chứa thông tin mà mạng học được từ quá trình huấn luyện với dữ liệu đầu vào.
+
+Quá trình huấn luyện diễn ra trong một vòng lặp gọi là **training loop**, gồm các bước sau:
+
+- Lấy một **batch** dữ liệu huấn luyện x và nhãn tương ứng y.
+- Chạy mạng trên x để dự đoán y_pred (bước forward pass).
+- Tính loss (tổn thất) của mạng trên batch này, là mức độ chênh lệch giữa dự đoán y_pred và giá trị thực y.
+- Cập nhật tất cả các trọng số của mạng sao cho giảm tổn thất này.
+
+Cách hiệu quả để cập nhật trọng số là sử dụng **gradient**, tức là đạo hàm của hàm loss với trọng số, giúp giảm tổn thất qua mỗi bước cập nhật.
+#### 2.4.1 What’s a derivative?
+Đạo hàm là hệ số góc của hàm số tại một điểm, thể hiện tốc độ thay đổi của hàm số khi biến số thay đổi.
+
+Đạo hàm giúp xác định xem một thay đổi nhỏ ở biến 𝑥 sẽ làm hàm số
+𝑓(𝑥) tăng hay giảm, và với tốc độ nhanh hay chậm.
+
+Nếu muốn giảm giá trị của hàm 𝑓(𝑥), bạn cần thay đổi 𝑥 theo hướng ngược lại với đạo hàm của 𝑓 tại điểm đó.
+
+Đạo hàm cung cấp thông tin quan trọng về cách mà giá trị của một hàm thay đổi, và là nền tảng cho việc tối ưu hóa trong học máy (machine learning).
+
+#### 2.4.2 Derivative of a tensor operation: the gradient
+Gradient là đạo hàm của một phép toán tensor. Nó là sự tổng quát hóa của khái niệm đạo hàm cho các hàm có đầu vào nhiều chiều, tức là các hàm nhận tensor làm đầu vào.
+
+Xét một vector đầu vào `x`, một ma trận `W`, một giá trị đích `y`, và một hàm loss (hàm tổn thất). Ta có thể sử dụng `W` để tính toán giá trị dự đoán `y_pred` và sau đó tính toán tổn thất (mức độ sai lệch) giữa `y_pred` và `y`:
+
+- y_pred = dot(W, x) 
+- loss_value = loss(y_pred, y)
+
+Khi giữ nguyên các giá trị `x` và `y`, ta có thể xem tổn thất là một hàm ánh xạ từ giá trị của `W` đến giá trị tổn thất:
+- loss_value = f(W)
+
+Nếu giá trị hiện tại của `W` là `W0`, thì đạo hàm của `f` tại điểm `W0` là một tensor `gradient(f)(W0)`, có cùng kích thước với `W`. Mỗi hệ số trong `gradient(f)(W0)` cho biết hướng và độ lớn của sự thay đổi tổn thất khi thay đổi giá trị tương ứng của `W0[i, j]`.
+
+Gradient `gradient(f)(W0)` có thể đư ợc hiểu là tensor mô tả **độ cong** của hàm `f(W)` quanh `W0`. Tương tự như cách đạo hàm của một hàm đơn biến `f(x)` cho biết hướng để giảm giá trị `f(x)`, gradient của một hàm `f(W)` nhiều chiều cho biết cách điều chỉnh `W` để giảm `f(W)`.
+
+Để giảm giá trị `f(W)`, ta điều chỉnh `W` theo hướng ngược lại với gradient:
+- W1 = W0 - step * gradient(f)(W0)
+
+
+Trong đó, `step` là một hệ số tỷ lệ nhỏ. Ta cần hệ số này vì gradient chỉ mô tả chính xác độ cong khi ta ở gần `W0`, do đó không nên thay đổi `W` quá xa khỏi giá trị ban đầu `W0`.
+
+#### Tóm tắt:
+- **Gradient** là đạo hàm của một phép toán tensor, tổng quát hóa khái niệm đạo hàm cho các hàm nhiều chiều.
+- Gradient cho biết hướng và độ lớn của sự thay đổi cần thiết để giảm giá trị của hàm tổn thất (loss) bằng cách thay đổi các giá trị trọng số `W`.
+- Ta có thể giảm tổn thất bằng cách điều chỉnh `W` theo hướng **ngược lại** với gradient của hàm loss tại `W0`.
+- Hệ số `step` được sử dụng để điều chỉnh mức độ thay đổi, giúp đảm bảo rằng ta không đi quá xa khỏi giá trị ban đầu `W0`.
+
+Gradient là công cụ chính trong quá trình tối ưu hóa mạng nơ-ron, giúp cập nhật các trọng số sao cho giảm được tổn thất trong quá trình huấn luyện.
+
+#### 2.4.3 Stochastic gradient descent
+Với một hàm khả vi, lý thuyết cho rằng có thể tìm điểm cực tiểu của nó bằng cách giải tích. Điểm cực tiểu của hàm là nơi mà đạo hàm của nó bằng 0, do đó, để tìm cực tiểu của hàm, ta chỉ cần tìm những điểm mà đạo hàm bằng 0 và kiểm tra giá trị nhỏ nhất tại các điểm đó.
+
+Áp dụng điều này vào mạng nơ-ron, nghĩa là tìm giá trị trọng số sao cho hàm mất mát (loss function) nhỏ nhất. Điều này có thể được thực hiện bằng cách giải phương trình \( \text{gradient}(f)(W) = 0 \) cho \( W \). Tuy nhiên, phương trình này là một phương trình đa biến với số lượng biến rất lớn, thường từ vài ngàn đến hàng triệu, khiến cho việc giải phương trình này không khả thi trong thực tế.
+
+Thay vào đó, chúng ta sử dụng thuật toán bốn bước được mô tả trước đó để thay đổi các tham số dần dần dựa trên giá trị mất mát hiện tại trên một lô (batch) dữ liệu ngẫu nhiên. Vì hàm mất mát là một hàm khả vi, ta có thể tính gradient của nó, từ đó cập nhật các trọng số theo hướng ngược lại với gradient để giảm tổn thất:
+
+1. Lấy một batch dữ liệu huấn luyện \( x \) và nhãn tương ứng \( y \).
+2. Chạy mạng để thu được dự đoán \( y_{\text{pred}} \).
+3. Tính toán tổn thất của mạng trên batch này, đo lường sự chênh lệch giữa \( y_{\text{pred}} \) và \( y \).
+4. Tính gradient của tổn thất đối với các tham số của mạng (bước **backward pass**).
+5. Cập nhật các tham số theo hướng ngược lại với gradient, ví dụ: \( W -= \text{step} \times \text{gradient} \), từ đó giảm tổn thất trên batch một chút.
+
+Phương pháp này được gọi là **mini-batch stochastic gradient descent** (minibatch SGD). Thuật ngữ "stochastic" (ngẫu nhiên) dùng để chỉ việc mỗi batch dữ liệu được chọn ngẫu nhiên. 
+
+Một yếu tố quan trọng là chọn giá trị hợp lý cho hệ số bước (step factor). Nếu bước quá nhỏ, quá trình giảm tổn thất sẽ rất chậm và có thể bị kẹt trong cực tiểu cục bộ. Nếu bước quá lớn, các cập nhật có thể khiến kết quả đi xa khỏi mục tiêu.
+
+Có một số biến thể của thuật toán **SGD**, bao gồm **SGD with momentum**, **Adagrad**, **RMSProp**, và nhiều phương pháp khác. Một khái niệm đặc biệt quan trọng là **momentum** (đà), được sử dụng để cải thiện tốc độ hội tụ và tránh bị kẹt trong các cực tiểu cục bộ.
+
+**Momentum** giúp tối ưu hóa nhanh hơn bằng cách xem quá trình này như một quả bóng lăn xuống đường cong tổn thất. Nếu có đủ đà, quả bóng sẽ không bị mắc kẹt ở các rãnh nhỏ và cuối cùng sẽ đạt được cực tiểu toàn cục. Cụ thể, cập nhật trọng số không chỉ dựa trên gradient hiện tại mà còn tính đến cập nhật trước đó:
+
+```python
+past_velocity = 0.
+momentum = 0.1
+while loss > 0.01:
+    w, loss, gradient = get_current_parameters()
+    velocity = past_velocity * momentum + learning_rate * gradient
+    w = w + momentum * velocity - learning_rate * gradient
+    past_velocity = velocity
+    update_parameter(w)
+```
+
