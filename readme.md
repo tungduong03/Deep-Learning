@@ -40,35 +40,35 @@
 | Method                                    | Word2Vec + CNN    |                 |               | Word2Vec + Logistic Regression |    |               |
 |-------------------------------------------|-------------------|-----------------|---------------|-------------------|-----------------|---------------|
 |                                           | Precision         | Recall          | F1-score      | Precision         | Recall          | F1-score      |
-| 000 - Normal                              | 0.77              | 0.92            | 0.84          | 0.56              | 0.80            | 0.66          |
-| 126 - Path Traversal                      | 0.99              | 0.90            | 0.94          | 0.39              | 0.08            | 0.13          |
-|153 - Input Data Manipulation              | 0.08              | 1.00            | 0.15          | 0.00              | 0.00            | 0.00          |
-|194 - Fake the Source of Data              | 0.93              | 0.90            | 0.92          | 0.29              | 0.05            | 0.08          |
-|242 - Code Injection                       | 0.97              | 0.86            | 0.91          | 0.43              | 0.03            | 0.06          |
-|272 - Protocol Manipulation                | 0.04              | 0.07            | 0.05          | 0.00              | 0.00            | 0.00          |
-|310 - Scanning for Vulnerable Software     | 0.82              | 0.45            | 0.58          | 0.72              | 0.91            | 0.81          |
-|34 - HTTP Response Splitting               | 0.94              | 0.97            | 0.95          | 0.37              | 0.01            | 0.02          |
-|66 - SQL Injection                         | 0.96              | 0.74            | 0.83          | 0.69              | 0.70            | 0.70          |
+| 000 - Normal                              | 0.63              | 0.02            | 0.03          | 0.56              | 0.80            | 0.66          |
+| 126 - Path Traversal                      | 0.00              | 0.00            | 0.00          | 0.39              | 0.08            | 0.13          |
+|153 - Input Data Manipulation              | 0.00              | 0.00            | 0.00          | 0.00              | 0.00            | 0.00          |
+|194 - Fake the Source of Data              | 0.45              | 0.00            | 0.01          | 0.29              | 0.05            | 0.08          |
+|242 - Code Injection                       | 1.00              | 0.00            | 0.00          | 0.43              | 0.03            | 0.06          |
+|272 - Protocol Manipulation                | 0.00              | 0.00            | 0.00          | 0.00              | 0.00            | 0.00          |
+|310 - Scanning for Vulnerable Software     | 0.71              | 0.39            | 0.50          | 0.72              | 0.91            | 0.81          |
+|34 - HTTP Response Splitting               | 0.00              | 0.00            | 0.00          | 0.37              | 0.01            | 0.02          |
+|66 - SQL Injection                         | 0.42              | 1,00            | 0.59          | 0.69              | 0.70            | 0.70          |
 |                                           |                   |                 |               |                   |                 |               |
-|accuracy                                   |                   |                 | 0.83          |                   |                 | 0.61          |
-|macro avg                                  | 0.72              | 0.76            | 0.69          | 0.38              | 0.29            | 0.27          |
-|weighted avg                               | 0.87              | 0.83            | 0.84          | 0.57              | 0.61            | 0.56          |
+|accuracy                                   |                   |                 | 0.43          |                   |                 | 0.61          |
+|macro avg                                  | 0.36              | 0.16            | 0.13          | 0.38              | 0.29            | 0.27          |
+|weighted avg                               | 0.49              | 0.43            | 0.26          | 0.57              | 0.61            | 0.56          |
 
 
 
-| Method                                    | secBERT           |                 |               |
-|-------------------------------------------|-------------------|-----------------|---------------|
-|                                           | Precision         | Recall          | F1-score      | 
-| 000 - Normal                              | 0.77              | 0.92            | 0.84          | 
-| 126 - Path Traversal                      | 0.99              | 0.90            | 0.94          | 
-|153 - Input Data Manipulation              | 0.08              | 1.00            | 0.15          |
-|194 - Fake the Source of Data              | 0.93              | 0.90            | 0.92          |
-|242 - Code Injection                       | 0.97              | 0.86            | 0.91          |
-|272 - Protocol Manipulation                | 0.04              | 0.07            | 0.05          | 
-|310 - Scanning for Vulnerable Software     | 0.82              | 0.45            | 0.58          | 
-|34 - HTTP Response Splitting               | 0.94              | 0.97            | 0.95          | 
-|66 - SQL Injection                         | 0.96              | 0.74            | 0.83          | 
-|                                           |                   |                 |               |          
-|accuracy                                   |                   |                 | 0.83          |                   
-|macro avg                                  | 0.72              | 0.76            | 0.69          | 
-|weighted avg                               | 0.87              | 0.83            | 0.84          | 
+| Method                                    | secBERT           |                 |               | GAN               |                 |               |
+|-------------------------------------------|-------------------|-----------------|---------------|-------------------|-----------------|---------------|
+|                                           | Precision         | Recall          | F1-score      | Precision         | Recall          | F1-score      |
+| 000 - Normal                              | 0.59              | 0.72            | 0.65          | 0.00              | 0.00            | 0.00          |
+| 126 - Path Traversal                      | 0.66              | 0.46            | 0.54          | 0.06              | 0.11            | 0.08          |
+|153 - Input Data Manipulation              | 0.00              | 0.00            | 0.00          | 0.02              | 0.00            | 0.00          |
+|194 - Fake the Source of Data              | 0.00              | 0.00            | 0.00          | 0.00              | 0.00            | 0.00          |
+|242 - Code Injection                       | 0.00              | 0.00            | 0.00          | 0.85              | 0.72            | 0.78          |
+|272 - Protocol Manipulation                | 0.00              | 0.00            | 0.00          |                   |                 |               |
+|310 - Scanning for Vulnerable Software     | 0.95              | 0.05            | 0.09          | 0.00              | 0.00            | 0.00          |
+|34 - HTTP Response Splitting               | 0.00              | 0.00            | 0.00          | 0.41              | 1.00            | 0.58          |
+|66 - SQL Injection                         | 0.57              | 0.70            | 0.63          |                   |                 |               |
+|                                           |                   |                 |               |                   |                 |               |
+|accuracy                                   |                   |                 | 0.58          |                   |                 | 0.61          |
+|macro avg                                  | 0.31              | 0.21            | 0.21          | 0.19              | 0.26            | 0.21          |
+|weighted avg                               | 0.49              | 0.58            | 0.53          | 0.68              | 0.61            | 0.63          |
