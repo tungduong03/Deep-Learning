@@ -56,19 +56,19 @@
 
 
 
-| Method                                    | secBERT           |                 |               | GAN               |                 |               |
-|-------------------------------------------|-------------------|-----------------|---------------|-------------------|-----------------|---------------|
-|                                           | Precision         | Recall          | F1-score      | Precision         | Recall          | F1-score      |
-| 000 - Normal                              | 0.98              | 0.81            | 0.89          | 0.00              | 0.00            | 0.00          |
-| 126 - Path Traversal                      | 1.00              | 0.89            | 0.94          | 0.06              | 0.11            | 0.08          |
-|153 - Input Data Manipulation              | 0.41              | 0.85            | 0.55          | 0.02              | 0.00            | 0.00          |
-|194 - Fake the Source of Data              | 0.99              | 0.94            | 0.96          | 0.00              | 0.00            | 0.00          |
-|242 - Code Injection                       | 0.99              | 0.96            | 0.98          | 0.85              | 0.72            | 0.78          |
-|272 - Protocol Manipulation                | 0.62              | 0.83            | 0.71          |                   |                 |               |
-|310 - Scanning for Vulnerable Software     | 0.98              | 1.00            | 0.99          | 0.00              | 0.00            | 0.00          |
-|34 - HTTP Response Splitting               | 1.00              | 0.93            | 0.96          | 0.41              | 1.00            | 0.58          |
-|66 - SQL Injection                         | 0.83              | 1.00            | 0.91          |                   |                 |               |
-|                                           |                   |                 |               |                   |                 |               |
-|accuracy                                   |                   |                 | 0.92          |                   |                 | 0.61          |
-|macro avg                                  | 0.87              | 0.91            | 0.88          | 0.19              | 0.26            | 0.21          |
-|weighted avg                               | 0.94              | 0.92            | 0.92          | 0.68              | 0.61            | 0.63          |
+| Method                                    | secBERT           |                 |               |
+|-------------------------------------------|-------------------|-----------------|---------------|
+|                                           | Precision         | Recall          | F1-score      | 
+| 000 - Normal                              | 0.98              | 0.81            | 0.89          | 
+| 126 - Path Traversal                      | 1.00              | 0.89            | 0.94          | 
+|153 - Input Data Manipulation              | 0.41              | 0.85            | 0.55          |
+|194 - Fake the Source of Data              | 0.99              | 0.94            | 0.96          | 
+|242 - Code Injection                       | 0.99              | 0.96            | 0.98          | 
+|272 - Protocol Manipulation                | 0.62              | 0.83            | 0.71          |                   
+|310 - Scanning for Vulnerable Software     | 0.98              | 1.00            | 0.99          | 
+|34 - HTTP Response Splitting               | 1.00              | 0.93            | 0.96          | 
+|66 - SQL Injection                         | 0.83              | 1.00            | 0.91          |                   
+|                                           |                   |                 |               |               
+|accuracy                                   |                   |                 | 0.92          |                  
+|macro avg                                  | 0.87              | 0.91            | 0.88          | 
+|weighted avg                               | 0.94              | 0.92            | 0.92          | 
